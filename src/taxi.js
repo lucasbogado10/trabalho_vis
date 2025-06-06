@@ -1,5 +1,5 @@
 
-import { loadDb } from './config';
+import { loadDb } from './config.js'; 
 
 export class Taxi {
     async init() {
@@ -18,7 +18,7 @@ export class Taxi {
 
         for (let id = 1; id <= months; id++) {
             const sId = String(id).padStart(2, '0')
-            files.push({ key: `Y2023M${sId}`, url: `${this.color}/${this.color}_tripdata_2023-${sId}.parquet` });
+            files.push({ key: `Y2023M${sId}`, url: `parquet/${this.color}_tripdata_2023-${sId}.parquet` });
 
             const res = await fetch(files[files.length - 1].url);
             await this.db.registerFileBuffer(files[files.length - 1].key, new Uint8Array(await res.arrayBuffer()));

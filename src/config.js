@@ -1,17 +1,18 @@
 import * as duckdb from '@duckdb/duckdb-wasm';
-import duckdb_wasm from '@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm?url';
-import mvp_worker from '@duckdb/duckdb-wasm/dist/duckdb-browser-mvp.worker.js?url';
-import duckdb_wasm_eh from '@duckdb/duckdb-wasm/dist/duckdb-eh.wasm?url';
-import eh_worker from '@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js?url';
+
+const duckdb_wasm_url = new URL('@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm', import.meta.url).href;
+const mvp_worker_url = new URL('@duckdb/duckdb-wasm/dist/duckdb-browser-mvp.worker.js', import.meta.url).href;
+const duckdb_wasm_eh_url = new URL('@duckdb/duckdb-wasm/dist/duckdb-eh.wasm', import.meta.url).href;
+const eh_worker_url = new URL('@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js', import.meta.url).href;
 
 const MANUAL_BUNDLES = {
   mvp: {
-    mainModule: duckdb_wasm,
-    mainWorker: mvp_worker,
+    mainModule: duckdb_wasm_url,
+    mainWorker: mvp_worker_url,
   },
   eh: {
-    mainModule: duckdb_wasm_eh,
-    mainWorker: eh_worker,
+    mainModule: duckdb_wasm_eh_url,
+    mainWorker: eh_worker_url,
   },
 };
 
