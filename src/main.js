@@ -1,5 +1,6 @@
-import { Taxi } from "./taxi";
-import {loadChart, clearChart} from './plot'
+import { Taxi } from "./taxi.js";
+import {loadTripDistanceTipAmountChart, loadWeekdayWeekendChart, loadTipAmountByTimeChart, clearAllCharts} from './plot.js';
+import { loadDb } from './config.js'; // Alterado: Adicionado .js
 
 function callbacks(data) {
     const loadBtn  = document.querySelector('#loadBtn');
@@ -10,12 +11,14 @@ function callbacks(data) {
     }
 
     loadBtn.addEventListener('click', async () => {
-        clearChart();
-        await loadChart(data);
+        clearAllCharts(); // Clear all charts before loading new ones
+        await loadTripDistanceTipAmountChart(data);
+        await loadWeekdayWeekendChart(data);
+        await loadTipAmountByTimeChart(data);
     });
 
     clearBtn.addEventListener('click', async () => {
-        clearChart();
+        clearAllCharts();
     });
 }
 
@@ -23,16 +26,20 @@ window.onload = async () => {
     const taxi = new Taxi();
 
     await taxi.init();
-    await taxi.loadTaxi();
+    await taxi.loadTaxi(); // Load data for 6 months
 
     const sql = `
         SELECT
-        // alterar codigo
-            trip_distance, 
-            tip_amount
+            tpep_pickup_datetime,
+            trip_distance,
+            tip_amount,
+            -- Extrair dia da semana (0=Domingo, 1=Segunda, ..., 6=Sábado)
+            CAST(strftime(tpep_pickup_datetime, '%w') AS INTEGER) AS pickup_day_of_week,
+            -- Extrair hora (00-23)
+            CAST(strftime(tpep_pickup_datetime, '%H') AS INTEGER) AS pickup_hour
         FROM
             taxi_2023
-        LIMIT ${100}
+        LIMIT ${5000} -- Increased limit for more data
     `;
 
     const data = await taxi.query(sql);
